@@ -69,3 +69,19 @@ def test_stacked_module():
     assert named_parameters["module_a.parameter_b"].value == VAL_B
     assert named_parameters["module_b.parameter_a"].value == VAL_A
     assert named_parameters["module_b.parameter_b"].value == VAL_B
+
+
+def main():
+    """ 
+    Main function for checking outputs
+    """
+    module1 = Module1()
+    module2 = Module2()
+    print("Module 1 children: ", module1._modules)
+    print("Module 2 children: ", module2._modules)
+    print("Module 1 parameters: ", module1._parameters)
+    print("Module 2 parameters: ", module2._parameters)
+
+
+if __name__ == "__main__":
+    main()

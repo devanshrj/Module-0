@@ -24,17 +24,15 @@ class Module:
         "Set the mode of this module and all descendent modules to `train`."
         # TODO: Implement for Task 0.4.
         self.mode = "train"
-        for module in self.__dict__["_modules"].keys():
-            self.module.mode = "train"
-        #  raise NotImplementedError('Need to implement for Task 0.4')
+        for child in self.modules():
+            child.mode = "train"
 
     def eval(self):
         "Set the mode of this module and all descendent modules to `eval`."
         # TODO: Implement for Task 0.4.
         self.mode = "eval"
-        for module in self.__dict__["_modules"].keys():
-            self.module.mode = "eval"
-        #  raise NotImplementedError('Need to implement for Task 0.4')
+        for child in self.modules():
+            child.mode = "eval"
 
     def named_parameters(self):
         """
@@ -45,11 +43,34 @@ class Module:
             dict: Each name (key) and :class:`Parameter` (value) under this module.
         """
         # TODO: Implement for Task 0.4.
-        named_params = {}
-        for key, value in self._parameters.items():
-            named_params[key] = value
+        named_params = self._parameters.copy()
+        return self.recursive_parameters(named_params, self._modules, "")
+
+    def recursive_parameters(self, named_params, children, prev_name):
+        """
+        Recursively collect parameters of the children of the current module.
+        Parameters are stored in the format: "parent_module.child_module.parameter_name = val"
+        Args:
+            named_params (dict): A dictionary of named parameters so far.
+            children (dict): A dictionary of the children of the current module.
+            prev_name (string): A string with the name of the previous child.
+
+        Returns:
+            named_params (dict): A dictionary of named parameters of children modules.
+        """
+        if children is None:
+            return named_params
+
+        for child_name, child in children.items():
+            temp = {}                           # temp dict to store parameters of current child
+            for key, value in child._parameters.items():
+                name = child_name + "." + key
+                # update main dict of named params
+                temp[name] = value
+            named_params.update(temp)
+            self.recursive_parameters(
+                named_params, child._modules, child_name + ".")
         return named_params
-        #  raise NotImplementedError('Need to implement for Task 0.4')
 
     def parameters(self):
         return self.named_parameters().values()
