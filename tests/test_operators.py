@@ -22,40 +22,45 @@ def test_relu(a):
         assert operators.relu(a) == 0.0
 
 
-## Task 0.2
-## Property Testing
+# Task 0.2
+# Property Testing
 
 
 @pytest.mark.task0_2
-def test_symmetric():
+@given(small_floats, small_floats)
+def test_symmetric(x, y):
     """
     Write a test that ensures that :func:`minitorch.operators.mul` is symmetric, i.e.
     gives the same value regardless of the order of its input.
     """
-    None
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    assert_close(operators.mul(x, y), operators.mul(y, x))
 
 
 @pytest.mark.task0_2
-def test_distribute():
+@given(small_floats, small_floats, small_floats)
+def test_distribute(x, y, z):
     r"""
     Write a test that ensures that your operators distribute, i.e.
     :math:`z \times (x + y) = z \times x + z \times y`
     """
     None
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    assert_close(operators.mul(z, operators.add(x, y)),
+                 operators.add(operators.mul(z, x), operators.mul(z, y)))
 
 
 @pytest.mark.task0_2
-def test_other():
+@given(small_floats, small_floats, small_floats)
+def test_other(x, y, z):
     """
-    Write a test that ensures some other property holds for your functions.
+    Write a test that ensures some other property holds for your functions. Property: Associativity
+    :math `z \times (x \times y) = (z \times x) \times y`
     """
     None
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    assert_close(operators.mul(z, operators.mul(x, y)),
+                 operators.mul(operators.mul(z, x), y))
 
 
 # HIGHER ORDER
@@ -78,7 +83,8 @@ def test_property(ls1, ls2):
     is the same as the sum of each element of `ls1` plus each element of `ls2`.
     """
     # TODO: Implement for Task 0.3.
-    raise NotImplementedError('Need to implement for Task 0.3')
+    assert_close(operators.addLists(ls1, ls2), [
+                 x + y for x, y in zip(ls1, ls2)])
 
 
 @pytest.mark.task0_3
